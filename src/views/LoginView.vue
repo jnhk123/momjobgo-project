@@ -49,17 +49,15 @@ export default {
 
       if(response.token){
         this.$store.state.user.token = response.token;
-        this.goToHome();
+        const userInfo = await this.$api(`/api/auth/user`, 'get')
+        this.$store.state.user.id = userInfo.id;
+        this.$store.state.user.name = userInfo.name;
       }
     },
 
     signUp(){
       
     },
-
-    goToHome(){
-      this.$router.push({path: '/'});
-    }
 
   },
 
@@ -68,9 +66,6 @@ export default {
     this.$store.state.appBarVisible = false;
     this.$store.state.appNavVisible = false;
     this.$store.state.appFooterVisible = false;
-    if(this.token){
-      this.goToHome();
-    }
   },
 
   beforeDestroy() {

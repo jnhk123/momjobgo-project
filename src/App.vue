@@ -5,7 +5,7 @@
       <v-list-item>
         <v-list-item-content>
           <v-list-item-title class="text-h6"> Vue-project </v-list-item-title>
-          <v-list-item-subtitle> 오준혁 </v-list-item-subtitle>
+          <v-list-item-subtitle> {{$store.state.user.name}} </v-list-item-subtitle>
         </v-list-item-content>
       </v-list-item>
 
@@ -84,9 +84,12 @@ export default {
 
     checkToken() {
       const loginPath = '/login';
+      const homePath = '/';
       if(!this.token && window.location.pathname !== loginPath){
-        this.$router.push({path : loginPath})
-      } 
+        this.$router.push({path : loginPath});
+      } else if(this.token && window.location.pathname !== homePath){
+        this.$router.push({path : homePath});
+      }
     }
   },
 

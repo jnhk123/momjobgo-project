@@ -11,7 +11,9 @@ export default new Vuex.Store({
     appFooterVisible: true,
 
     user: {
-      token: ''
+      token: '',
+      name: '',
+      id: ''
     }
 
   },
