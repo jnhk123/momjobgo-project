@@ -10,6 +10,10 @@ export default new Vuex.Store({
     appNavVisible: true,
     appFooterVisible: true,
 
+    user: {
+      token: ''
+    }
+
   },
   getters: {
   },

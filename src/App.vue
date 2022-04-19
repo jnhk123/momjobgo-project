@@ -20,11 +20,21 @@
             <v-list-item-title>{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
+
+
+        <v-list-item @click="logout">
+          <v-list-item-icon>
+            <v-icon>logout</v-icon>
+          </v-list-item-icon>
+          <v-list-item-content>
+            <v-list-item-title>logout</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
       </v-list>
     </v-navigation-drawer>
 
     <v-app-bar app v-if="$store.state.appBarVisible">
-      <v-app-bar-title> {{ $store.state.title }} </v-app-bar-title>
+      <v-app-bar-title> {{ $store.state.title }}</v-app-bar-title>
     </v-app-bar>
 
     <v-main>
@@ -57,8 +67,39 @@ export default {
     items: [
       { title: "Home", icon: "home", to: "/" },
       { title: "About", icon: "question_mark", to:"/about" },
-      { title: "Login", icon: "login", to:"/login" },
+      // { title: "Login", icon: "login", to:"/login" },
     ],
   }),
+
+  mounted() {
+    this.checkToken();
+  },
+
+  methods: {
+    logout() {
+      if(confirm('정말로 로그아웃 하시겠습니까?')){
+        this.$store.state.user.token = '';
+      }
+    },
+
+    checkToken() {
+      const loginPath = '/login';
+      if(!this.token && window.location.pathname !== loginPath){
+        this.$router.push({path : loginPath})
+      } 
+    }
+  },
+
+  computed : {
+    token() {
+      return this.$store.state.user.token;
+    }
+  },
+
+  watch : {
+    'token' : function() {
+      this.checkToken();
+    }
+  }
 };
 </script>
