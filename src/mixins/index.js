@@ -1,8 +1,5 @@
-import axios from 'axios'
+import axios from '@/plugins/axios'
 import store from '@/store'
-
-axios.defaults.baseURL = 'http://momjobgo.devcury.kr';
-axios.defaults.headers.post['Content-Type'] = 'application/json';
 
 export default {
     methods: {
@@ -14,8 +11,8 @@ export default {
                 method: method
                 , url
                 , data
-            }).catch(e => {
-                console.error(e);
+            }).catch(e=> {
+                return e.response
             })).data;
         }
     }

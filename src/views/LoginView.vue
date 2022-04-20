@@ -47,11 +47,13 @@ export default {
         pwd: this.password,
       });
 
-      if(response.token){
+      if(response?.token){
         this.$store.state.user.token = response.token;
         const userInfo = await this.$api(`/api/auth/user`, 'get')
         this.$store.state.user.id = userInfo.id;
         this.$store.state.user.name = userInfo.name;
+      } else if(response?.error){
+        alert(response.error);
       }
     },
 
