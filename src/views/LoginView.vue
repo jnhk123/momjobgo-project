@@ -18,14 +18,20 @@
       </v-card-text>
       <v-divider></v-divider>
       <v-card-actions>
-        <v-btn color="success" @click="signUp">회원가입</v-btn>
-        <v-btn color="info" @click="login">로그인</v-btn>
+        <SignUpModal btn-color="success">
+          <template v-slot:title>회원가입</template>
+        </SignUpModal>
+        <v-btn color="info" @click="login" style="margin-left: 8px;">로그인</v-btn>
       </v-card-actions>
     </v-card>
+
+    
   </v-app>
 </template>
 
 <script>
+import SignUpModal from './SignupView'
+
 const PAGE_NAME = "Login";
 
 export default {
@@ -40,6 +46,10 @@ export default {
     password: "",
   }),
 
+  components : {
+    SignUpModal
+  },
+
   methods : {
     async login() {
       const response = await this.$api(`/auth/user`, "post", {
@@ -47,13 +57,14 @@ export default {
         pwd: this.password,
       });
 
-      if(response?.token){
-        this.$store.state.user.token = response.token;
+      if(response?.status === this.HTTP_OK){
+        const token = response.data.token;
+        this.$store.state.user.token = token;
         const userInfo = await this.$api(`/api/auth/user`, 'get')
         this.$store.state.user.id = userInfo.id;
         this.$store.state.user.name = userInfo.name;
-      } else if(response?.error){
-        alert(response.error);
+      } else if(response?.data?.error){
+        alert(response.data.error);
       }
     },
 
