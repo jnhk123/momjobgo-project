@@ -60,16 +60,13 @@ export default {
       if(response?.status === this.HTTP_OK){
         const token = response.data.token;
         this.$store.state.user.token = token;
-        const userInfo = await this.$api(`/api/auth/user`, 'get')
+        
+        const {data : userInfo} = await this.$api(`/api/auth/user`, 'get')
         this.$store.state.user.id = userInfo.id;
         this.$store.state.user.name = userInfo.name;
       } else if(response?.data?.error){
         alert(response.data.error);
       }
-    },
-
-    signUp(){
-      
     },
 
   },
