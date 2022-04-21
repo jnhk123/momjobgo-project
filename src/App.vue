@@ -67,7 +67,7 @@ export default {
     items: [
       { title: "Home", icon: "home", to: "/" },
       { title: "About", icon: "question_mark", to:"/about" },
-      // { title: "Login", icon: "login", to:"/login" },
+      { title: "User", icon: "account_circle", to:"/user" },
     ],
   }),
 

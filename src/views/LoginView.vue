@@ -31,6 +31,7 @@
 
 <script>
 import SignUpModal from './SignupView'
+import {mapActions} from 'vuex'
 
 const PAGE_NAME = "Login";
 
@@ -51,6 +52,9 @@ export default {
   },
 
   methods : {
+
+    ...mapActions(['setToken', 'setUserInfo']),
+
     async login() {
       const response = await this.$api(`/auth/user`, "post", {
         id: this.id,
@@ -59,11 +63,11 @@ export default {
 
       if(response?.status === this.HTTP_OK){
         const token = response.data.token;
-        this.$store.state.user.token = token;
+        this.setToken(token);
         
-        const {data : userInfo} = await this.$api(`/api/auth/user`, 'get')
-        this.$store.state.user.id = userInfo.id;
-        this.$store.state.user.name = userInfo.name;
+        const {data : user} = await this.$api(`/api/auth/user`, 'get')
+        this.setUserInfo(user);
+
       } else if(response?.data?.error){
         alert(response.data.error);
       }
