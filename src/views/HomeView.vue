@@ -111,6 +111,7 @@ export default {
 
       // 마커에 클릭이벤트를 등록합니다
       kakao.maps.event.addListener(marker, 'click', ()=> {
+          this.map.setCenter(new kakao.maps.LatLng(place.y, place.x));
           this.map.setLevel(4);
 
           if(this.infowindow.close){
@@ -129,7 +130,7 @@ export default {
               content : template,
               removable : true
           });
-          
+
           this.infowindow.open(this.map, marker);
       });
     }
