@@ -6,13 +6,7 @@
 
 
 <script>
-const PAGE_NAME = 'About';
-
 export default {
-  name : PAGE_NAME,
 
-  mounted() {
-    this.$store.state.title = PAGE_NAME;
-  },
 }
 </script>

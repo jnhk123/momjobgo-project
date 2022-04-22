@@ -15,17 +15,14 @@
 </template>
 
 <script>
-const PAGE_NAME = "Home";
-
 export default {
-  name: PAGE_NAME,
 
   data: () => ({
     map: {},
+
     infowindow : {},
 
     markerList : [],
-    
  
     keyword : ''
 
@@ -34,8 +31,6 @@ export default {
   components: {},
 
   mounted() {
-    this.$store.state.title = PAGE_NAME;
-
     this.$loadKakaoMap(() => {
 
       const container = document.getElementById("map");

@@ -33,14 +33,13 @@
 
 <script>
 import SignUpModal from './SignupView'
-import {mapActions} from 'vuex'
-
-const PAGE_NAME = "Login";
+import Page from '@/utils/Page';
+import {mapState, mapActions} from 'vuex'
 
 export default {
 
   data: () => ({
-    name: PAGE_NAME,
+    name: Page.name,
 
     showPassword: false,
 
@@ -78,7 +77,6 @@ export default {
   },
 
   mounted() {
-    this.$store.state.title = PAGE_NAME;
     this.$store.state.appBarVisible = false;
     this.$store.state.appNavVisible = false;
     this.$store.state.appFooterVisible = false;
@@ -91,9 +89,7 @@ export default {
   },
 
   computed : {
-    token() {
-      return this.$store.state.user.token;
-    }
+    ...mapState(['token'])
   }
 }
 </script>

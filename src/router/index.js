@@ -5,45 +5,57 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import LoginView from '../views/LoginView.vue'
 import UserView from '../views/UserView.vue'
+import BoardView from '../views/BoardView.vue'
+
+import Page from '@/utils/Page'
 
 Vue.use(VueRouter)
 
 const routes = [
+
   {
-    path: '/',
-    name: 'home',
+    ...Page.HOME,
     component: HomeView
   },
   {
-    path: '/about',
-    name: 'about',
+    ...Page.ABOUT,
     component: AboutView
   },
   {
-    path: '/user',
-    name: 'user',
+    ...Page.USER,
     component: UserView
   },
-
-
-
   {
-    path: '/login',
-    name: 'login',
+    ...Page.BOARD,
+    component: BoardView
+  }
+
+
+
+
+
+
+
+  , {
+    ...Page.LOGIN,
     component: LoginView
   }
+
 ]
 
 const router = new VueRouter({
   mode: 'history',
-  base: process.env.BASE_URL,
   routes
 });
 
 router.beforeEach(function (to, from, next) {
-  if (store.state.user.token || to.path === '/login') {
+  if (store.state.user.token || to.path === Page.LOGIN.path) {
     next();
   }
+});
+
+router.afterEach(function (to, from) {
+  store.dispatch('setTitle', to.meta.title);
 });
 
 export default router

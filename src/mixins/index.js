@@ -8,6 +8,12 @@ export default {
     }),
 
     methods: {
+        /**
+         * @param {*} url 
+         * @param {*} method 
+         * @param {*} data paramter 
+         * @returns 
+         */
         async $api(url, method, data) {
             return axios({
                 headers: {
