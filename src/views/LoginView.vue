@@ -6,13 +6,15 @@
       </v-card-title>
       <v-card-text>
         <v-form>
-          <v-text-field label="Id" v-model="id" />
+          <v-text-field label="Id" v-model="id" @keyup.enter="$refs.pwd.focus()"/>
           <v-text-field
+            ref="pwd"
             :type="showPassword ? 'text' : 'password'"
             label="Password"
             :append-icon="showPassword ? 'mdi-eye' : 'mdi-eye-off'"
             @click:append="showPassword = !showPassword"
             v-model="password"
+            @keyup.enter="login"
           />
         </v-form>
       </v-card-text>

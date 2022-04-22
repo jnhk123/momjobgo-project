@@ -19,6 +19,17 @@ export default {
             }).catch(e => {
                 return e.response
             });
+        },
+
+        $loadKakaoMap(callback) {
+            if (typeof kakao === 'undefined') {
+                const script = document.createElement('script');
+                script.onload = () => kakao.maps.load(callback);
+                script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.VUE_APP_KAKAOMAP_KEY}&autoload=false&libraries=services`;
+                document.head.appendChild(script);
+            } else {
+                callback();
+            }
         }
     }
 }

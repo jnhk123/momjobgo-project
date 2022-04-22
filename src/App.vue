@@ -45,13 +45,8 @@
 
     <v-footer app v-if="$store.state.appFooterVisible">
       <v-card flat tile class="text-center">
-        <v-card-text></v-card-text>
-        <v-card-text class="black--text pt-0">
-          Phasellus feugiat arcu sapien, et iaculis ipsum elementum sit amet. Mauris cursus commodo interdum. Praesent ut risus eget metus luctus accumsan id ultrices nunc. Sed at orci sed massa consectetur dignissim a sit amet dui. Duis commodo vitae velit et faucibus. Morbi vehicula lacinia malesuada. Nulla placerat augue vel ipsum ultrices, cursus iaculis dui sollicitudin. Vestibulum eu ipsum vel diam elementum tempor vel ut orci. Orci varius natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus.
-        </v-card-text>
-        <v-divider></v-divider>
         <v-card-text class="black--text">
-          {{ new Date().getFullYear() }} — <strong>Vuetify</strong>
+          made by. 2022
         </v-card-text>
       </v-card>
     </v-footer>
@@ -60,49 +55,46 @@
 </template>
 
 <script>
+import AboutView from "./views/AboutView.vue";
 export default {
-  name: "App",
-
-  data: () => ({
-    items: [
-      { title: "Home", icon: "home", to: "/" },
-      { title: "About", icon: "question_mark", to:"/about" },
-      { title: "User", icon: "account_circle", to:"/user" },
-    ],
-  }),
-
-  mounted() {
-    this.checkToken();
-  },
-
-  methods: {
-    logout() {
-      if(confirm('정말로 로그아웃 하시겠습니까?')){
-        this.$store.state.user.token = '';
-      }
+    name: "App",
+    data: () => ({
+        items: [
+            { title: "Home", icon: "home", to: "/" },
+            { title: "About", icon: "question_mark", to: "/about" },
+            { title: "User", icon: "account_circle", to: "/user" },
+        ],
+    }),
+    mounted() {
+        this.checkToken();
     },
-
-    checkToken() {
-      const loginPath = '/login';
-      const homePath = '/';
-      if(!this.token && window.location.pathname !== loginPath){
-        this.$router.push({path : loginPath});
-      } else if(this.token && window.location.pathname !== homePath){
-        this.$router.push({path : homePath});
-      }
-    }
-  },
-
-  computed : {
-    token() {
-      return this.$store.state.user.token;
-    }
-  },
-
-  watch : {
-    'token' : function() {
-      this.checkToken();
-    }
-  }
+    methods: {
+        logout() {
+            if (confirm("정말로 로그아웃 하시겠습니까?")) {
+                this.$store.state.user.token = "";
+            }
+        },
+        checkToken() {
+            const loginPath = "/login";
+            const homePath = "/";
+            if (!this.token && window.location.pathname !== loginPath) {
+                this.$router.push({ path: loginPath });
+            }
+            else if (this.token && window.location.pathname !== homePath) {
+                this.$router.push({ path: homePath });
+            }
+        }
+    },
+    computed: {
+        token() {
+            return this.$store.state.user.token;
+        }
+    },
+    watch: {
+        "token": function () {
+            this.checkToken();
+        }
+    },
+    components: { AboutView }
 };
 </script>
