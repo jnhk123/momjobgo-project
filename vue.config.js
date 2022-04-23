@@ -4,5 +4,5 @@ module.exports = defineConfig({
     'vuetify'
   ],
   outputDir: './docs',
-  publicPath: '/momjobgo-project/'
+  // publicPath: '/momjobgo-project/'
 })
