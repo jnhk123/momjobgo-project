@@ -21,6 +21,11 @@ export default new Vuex.Store({
 
   },
   getters: {
+
+    userInfo(state){
+      return state.user;
+    },
+
     hasToken(state) {
       return !!state.user.token
     },

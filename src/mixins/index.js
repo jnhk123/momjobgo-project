@@ -36,6 +36,27 @@ export default {
             } else {
                 callback();
             }
+        },
+
+        $nl2br(text){
+            return text.replace(/\n/g, "<br />");
         }
+    },
+
+    filters : {
+        toYmdHms(dateObj){
+            const current = new Date();
+
+            const year = String(current.getFullYear());
+            const month = String(current.getMonth() + 1).padStart(2,0);
+            const date = String(current.getDate()).padStart(2,0);
+            const hour = String(current.getHours()).padStart(2,0);
+            const minute = String(current.getMinutes()).padStart(2,0);
+            const second = String(current.getSeconds()).padStart(2,0);
+
+            return `${year}-${month}-${date} ${hour}:${minute}:${second}`;
+        },
+
+
     }
 }

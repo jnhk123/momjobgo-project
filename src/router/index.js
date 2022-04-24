@@ -5,7 +5,7 @@ import HomeView from '../views/HomeView.vue'
 import AboutView from '../views/AboutView.vue'
 import LoginView from '../views/LoginView.vue'
 import UserView from '../views/UserView.vue'
-import BoardView from '../views/BoardView.vue'
+import BoardsView from '../views/BoardsView.vue'
 
 import Page from '@/utils/Page'
 
@@ -27,7 +27,7 @@ const routes = [
   },
   {
     ...Page.BOARD,
-    component: BoardView
+    component: BoardsView
   }
 
 
