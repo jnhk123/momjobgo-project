@@ -3,7 +3,7 @@ const SUB_PATH = `/momjobgo-project`;
 export default class Page {
     
     static HOME = {
-        path: `${SUB_PATH}/`,
+        path: `${SUB_PATH}/home`,
         name: `home`,
         meta: {
             title: `Home`,
