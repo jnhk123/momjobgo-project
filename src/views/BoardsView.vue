@@ -13,20 +13,23 @@
         ></v-text-field>
         <v-spacer></v-spacer>
 
-        <v-dialog v-model="popup" max-width="500px">
+        <v-dialog v-model="popup" max-width="800px">
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ editedItem.title }}</span>
             </v-card-title>
+
+            <v-card-subtitle>
+              <span class="text-h6">{{ editedItem.title }}</span>
+            </v-card-subtitle>
 
             <v-card-text>
               <v-container>
-                <v-card-text v-html="$nl2br(editedItem.contents)">
-                  
+                <v-card-text v-html="$nl2br(editedItem.contents)" style="border-style: ridge;">
                 </v-card-text>
+                <BoardCommentsViewVue :bno="popupBno" @updated="updatedComment"></BoardCommentsViewVue>
               </v-container>
             </v-card-text>
-
+            
             <v-card-actions>
               <v-spacer></v-spacer>
               <v-btn color="blue darken-1" text @click="closePopup"> 확인 </v-btn>
@@ -89,11 +92,11 @@
     </template>
 
     <template #item.title="{ item }">
-      <span style="cursor: pointer;" @click="popupItem(item)"> {{item.title}} </span>
+      <span style="cursor: pointer;" @click="popupItem(item)"> {{item.title}} <template v-if="item.commentCnt > 0">({{item.commentCnt}})</template> </span>
     </template>
 
     <template #item.createdAt="{ item }">
-      <span> {{ new Date(item.createdAt) | toYmdHms}} </span>
+      <span> {{ new Date(item.createdAt) | getWriteTime}} </span>
     </template>
 
     <template #item.actions="{ item }">
@@ -111,169 +114,184 @@
 </template>
 
 <script>
-export default {
-  data: () => ({
-    dialog: false,
-    dialogDelete: false,
-    popup : false,
-    search : '',
+  import BoardCommentsViewVue from "./BoardCommentsView.vue";
 
-    headers: [
-      {
-        text: "게시물 번호",
-        align: "start",
-        sortable: true,
-        value: "bno",
+  export default {
+    data: () => ({
+
+      popupBno : 0,
+
+      dialog: false,
+      dialogDelete: false,
+      popup : false,
+      search : '',
+
+      headers: [
+        {
+          text: "게시물 번호",
+          align: "start",
+          sortable: true,
+          value: "bno",
+        },
+        { text: "제목", value: "title" },
+        { text: "작성자", value: "writer" },
+        { text: "등록일", value: "createdAt" },
+        { text: "", value: "actions", sortable: false },
+      ],
+      boards: [],
+
+      editedIndex: -1,
+      editedItem: {
+        bno: 0,
+        title: "",
+        contents: "",
       },
-      { text: "제목", value: "title" },
-      { text: "작성자", value: "writer" },
-      { text: "등록일", value: "createdAt" },
-      { text: "", value: "actions", sortable: false },
-    ],
-    boards: [],
+      defaultItem: {
+        bno : 0,
+        title: "",
+        contents: "",
+      },
+    }),
 
-    editedIndex: -1,
-    editedItem: {
-      bno: 0,
-      title: "",
-      contents: "",
-    },
-    defaultItem: {
-      bno : 0,
-      title: "",
-      contents: "",
-    },
-  }),
-
-  computed: {
-    formTitle() {
-      return this.editedIndex === -1 ? "New Item" : "Edit Item";
-    },
-  },
-
-  watch: {
-    dialog(val) {
-      val || this.close();
-    },
-    dialogDelete(val) {
-      val || this.closeDelete();
-    },
-    popup(val) {
-      val || this.closePopup();
-    }
-  },
-
-  created() {
-    this.initialize();
-  },
-
-  methods: {
-    initialize() {
-      this.callBoards();
+    components : {
+      BoardCommentsViewVue 
     },
 
-    async callBoards() {
-      const response = await this.$api("/api/board", "get");
-
-      if (response.status === 200) {
-        this.boards = response.data;
-      } else if (response?.data?.error) {
-        alert(response.data.error);
+    computed: {
+      formTitle() {
+        return this.editedIndex === -1 ? "New Item" : "Edit Item";
       }
     },
 
-    popupItem(item) {
-      this.editedIndex = this.boards.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.popup = true;
+    watch: {
+      dialog(val) {
+        val || this.close();
+      },
+      dialogDelete(val) {
+        val || this.closeDelete();
+      },
+      popup(val) {
+        val || this.closePopup();
+      }
     },
 
-    editItem(item) {
-      this.editedIndex = this.boards.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialog = true;
+    created() {
+      this.initialize();
     },
 
-    deleteItem(item) {
-      this.editedIndex = this.boards.indexOf(item);
-      this.editedItem = Object.assign({}, item);
-      this.dialogDelete = true;
-    },
-
-    async deleteItemConfirm() {
-      const bno = this.editedItem.bno;
-
-      const response = await this.$api(`/api/board/${bno}`, 'delete')
-      if(response.status === 200){
-        alert('삭제 되었습니다.');
+    methods: {
+      initialize() {
         this.callBoards();
-      } else if(response?.data?.error) {
-        alert(response.data.error);
-      }
+      },
 
-      this.closeDelete();
+      async callBoards() {
+        const response = await this.$api("/api/board", "get");
 
-
-    },
-
-    close() {
-      this.dialog = false;
-      this.clearEditItem();
-    },
-
-    closePopup() {
-      this.popup = false;
-      this.clearEditItem();
-    },
-
-    clearEditItem(){
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    closeDelete() {
-      this.dialogDelete = false;
-      this.$nextTick(() => {
-        this.editedItem = Object.assign({}, this.defaultItem);
-        this.editedIndex = -1;
-      });
-    },
-
-    async save() {
-      if (this.editedIndex > -1) {
-        // 수정
-        const response = await this.$api("/api/board", "PATCH", {
-          bno: this.editedItem.bno,
-          title: this.editedItem.title,
-          contents: this.editedItem.contents,
-        });
-
-        if (response.status === 201 || response.status === 200) {
-          alert("수정되었습니다.");
-          this.dialog = false;
+        if (response.status === 200) {
+          this.boards = response.data;
         } else if (response?.data?.error) {
           alert(response.data.error);
         }
-      } else {
-        // 신규 등록
-        const response = await this.$api("/api/board", "POST", {
-          title: this.editedItem.title,
-          contents: this.editedItem.contents,
-        });
+      },
 
-        if (response.status === 201 || response.status === 200) {
-          alert("등록되었습니다.");
-          this.dialog = false;
-        } else if (response?.data?.error) {
+      popupItem(item) {
+        this.popupBno = item.bno;
+        this.editedIndex = this.boards.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.popup = true;
+      },
+
+      editItem(item) {
+        this.editedIndex = this.boards.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialog = true;
+      },
+
+      deleteItem(item) {
+        this.editedIndex = this.boards.indexOf(item);
+        this.editedItem = Object.assign({}, item);
+        this.dialogDelete = true;
+      },
+
+      async deleteItemConfirm() {
+        const bno = this.editedItem.bno;
+
+        const response = await this.$api(`/api/board/${bno}`, 'delete')
+        if(response.status === 200){
+          alert('삭제 되었습니다.');
+          this.callBoards();
+        } else if(response?.data?.error) {
           alert(response.data.error);
         }
-      }
 
-      this.callBoards();
-      this.close();
+        this.closeDelete();
+
+
+      },
+
+      close() {
+        this.dialog = false;
+        this.clearEditItem();
+      },
+
+      closePopup() {
+        this.popup = false;
+        this.clearEditItem();
+      },
+
+      clearEditItem(){
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      closeDelete() {
+        this.dialogDelete = false;
+        this.$nextTick(() => {
+          this.editedItem = Object.assign({}, this.defaultItem);
+          this.editedIndex = -1;
+        });
+      },
+
+      async save() {
+        if (this.editedIndex > -1) {
+          // 수정
+          const response = await this.$api("/api/board", "PATCH", {
+            bno: this.editedItem.bno,
+            title: this.editedItem.title,
+            contents: this.editedItem.contents,
+          });
+
+          if (response.status === 201 || response.status === 200) {
+            alert("수정되었습니다.");
+            this.dialog = false;
+          } else if (response?.data?.error) {
+            alert(response.data.error);
+          }
+        } else {
+          // 신규 등록
+          const response = await this.$api("/api/board", "POST", {
+            title: this.editedItem.title,
+            contents: this.editedItem.contents,
+          });
+
+          if (response.status === 201 || response.status === 200) {
+            alert("등록되었습니다.");
+            this.dialog = false;
+          } else if (response?.data?.error) {
+            alert(response.data.error);
+          }
+        }
+
+        this.callBoards();
+        this.close();
+      },
+
+      updatedComment(){
+        this.callBoards();
+      }
     },
-  },
-};
+  };
+  
 </script>
