@@ -1,13 +1,13 @@
 <template>
-  <v-app>
-    <NavView></NavView>
+    <v-app>
+        <NavView></NavView>
 
-    <HeaderView></HeaderView>
+        <HeaderView></HeaderView>
 
-    <MainView></MainView>
+        <MainView></MainView>
 
-    <FooterView></FooterView>
-  </v-app>
+        <FooterView></FooterView>
+    </v-app>
 </template>
 
 <script>
@@ -19,40 +19,39 @@ import MainView from "./views/layout/MainView.vue";
 import Page from "./utils/Page";
 
 export default {
-  name: "App",
-  data: () => ({}),
+    name: "App",
+    data: () => ({}),
 
-  components: {
-    NavView,
-    HeaderView,
-    MainView,
-    FooterView,
-  },
-
-  mounted() {
-    this.checkToken();
-  },
-
-  methods: {
-    checkToken() {
-      if( this.hasToken && window.location.pathname !== Page.HOME.path){
-        this.$router.push({ path: Page.HOME.path });
-      } else if (!this.hasToken && window.location.pathname !== Page.LOGIN.path){
-        this.$router.push({ path: Page.LOGIN.path });
-      }
+    components: {
+        NavView,
+        HeaderView,
+        MainView,
+        FooterView,
     },
-  },
 
-  computed: {
-    ...mapGetters(["hasToken"]),
-  },
-
-  watch: {
-    'hasToken': function () {
-      this.checkToken();
+    mounted() {
+        this.checkToken();
     },
-  },
 
+    methods: {
+        checkToken() {
+            if( this.hasToken && Page.method.getSubPath() !== Page.HOME.path){
+                this.$router.push({ path: Page.HOME.path });
+            } else if (!this.hasToken && Page.method.getSubPath() !== Page.LOGIN.path){
+                this.$router.push({ path: Page.LOGIN.path });
+            }
+        },
+    },
+
+    computed: {
+        ...mapGetters(["hasToken"]),
+    },
+
+    watch: {
+        'hasToken': function () {
+            this.checkToken();
+        },
+    },
 
 };
 </script>

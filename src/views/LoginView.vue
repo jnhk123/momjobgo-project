@@ -69,9 +69,8 @@ export default {
         const {data : user} = await this.$api(`/api/auth/user`, 'get')
         this.setUserInfo(user);
 
-      } else if(response?.data?.error){
-        alert(response.data.error);
-      }
+      } 
+
     },
 
   },

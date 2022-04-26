@@ -64,11 +64,9 @@ export default {
                     ...this.user
                 });
 
-                if(response.status === 201){
+                if(response.status === this.HTTP_CREATED){
                     alert('회원가입 되었습니다.');
                     this.dialog = false;
-                } else if(response?.data?.error){
-                    alert(response.data.error);
                 }
                 
             } else {

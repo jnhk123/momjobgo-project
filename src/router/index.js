@@ -12,22 +12,22 @@ import Page from '@/utils/Page'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    ...Page.HOME,
-    component: HomeView
-  },
-  {
-    ...Page.ABOUT,
-    component: AboutView
-  },
-  {
-    ...Page.USER,
-    component: UserView
-  },
-  {
-    ...Page.BOARD,
-    component: BoardsView
-  }
+    {
+        ...Page.HOME,
+        component: HomeView
+    },
+    {
+        ...Page.ABOUT,
+        component: AboutView
+    },
+    {
+        ...Page.USER,
+        component: UserView
+    },
+    {
+        ...Page.BOARD,
+        component: BoardsView
+    }
 
 
 
@@ -35,11 +35,10 @@ const routes = [
 
 
 
-  , {
-    ...Page.LOGIN,
-    component: LoginView
-  }
-
+    , {
+        ...Page.LOGIN,
+        component: LoginView
+    }
 ]
 
 const router = new VueRouter({
@@ -49,13 +48,13 @@ const router = new VueRouter({
 });
 
 router.beforeEach(function (to, from, next) {
-  if (store.state.user.token || to.path === Page.LOGIN.path) {
-    next();
-  }
+    if (store.state.user.token || to.path === Page.LOGIN.path) {
+        next();
+    }
 });
 
 router.afterEach(function (to, from) {
-  store.dispatch('setTitle', to.meta.title);
+    store.dispatch('setTitle', to.meta.title);
 });
 
 export default router

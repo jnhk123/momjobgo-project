@@ -73,7 +73,7 @@ export default {
                     newPwd : this.user.newPwd === '' ? null : this.user.newPwd
                 });
 
-                if(response.status === 200){
+                if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
                     alert("수정 되었습니다.");
                     this.refreshUser();
                 }

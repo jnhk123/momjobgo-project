@@ -128,8 +128,12 @@
 
 <script>
     import BoardCommentsViewVue from "./BoardCommentsView.vue";
+    import BoardMixin from "@/mixins/board";
+    import DateMixin from "@/mixins/date";
 
     export default {
+        mixins : [BoardMixin, DateMixin],
+
         data: () => ({
             
             emotionList : [
@@ -206,7 +210,7 @@
             async callBoards() {
                 const response = await this.$api("/api/board", "get");
 
-                if (response.status === 200) {
+                if (response.status === this.HTTP_OK) {
                     this.boards = response.data;
                 } else if (response?.data?.error) {
                     alert(response.data.error);
@@ -237,11 +241,9 @@
                 const bno = this.editedItem.bno;
 
                 const response = await this.$api(`/api/board/${bno}`, 'delete')
-                if(response.status === 200){
+                if(response.status === this.HTTP_OK){
                     alert('삭제 되었습니다.');
                     this.callBoards();
-                } else if(response?.data?.error) {
-                    alert(response.data.error);
                 }
 
                 this.closeDelete();
@@ -282,11 +284,9 @@
                         contents: this.editedItem.contents,
                     });
 
-                    if (response.status === 201 || response.status === 200) {
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
                         alert("수정되었습니다.");
                         this.dialog = false;
-                    } else if (response?.data?.error) {
-                        alert(response.data.error);
                     }
                 } else {
                     // 신규 등록
@@ -295,11 +295,9 @@
                         contents: this.editedItem.contents,
                     });
 
-                    if (response.status === 201 || response.status === 200) {
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
                         alert("등록되었습니다.");
                         this.dialog = false;
-                    } else if (response?.data?.error) {
-                        alert(response.data.error);
                     }
                 }
 
@@ -314,7 +312,7 @@
             async callEmotion(){
                 const response = await this.$api(`/api/board/emotion/${this.popupBno}`, 'GET', null);
 
-                if(response.status === 200){
+                if(response.status === this.HTTP_OK){
                     
                     const emotion = response.data.emotion;
                     if(emotion != null){
@@ -323,8 +321,6 @@
                         this.emotionList.forEach(emotion => emotion.on = false);
                     }
 
-                } else if(response?.data?.error){
-                    alert(response.data.error);
                 }
             },
 

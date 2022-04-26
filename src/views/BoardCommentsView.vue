@@ -37,8 +37,10 @@
 
 <script>
     import { mapGetters } from "vuex";
+    import DateMixin from "@/mixins/date";
 
     export default {
+        mixins : [DateMixin],
 
         props : {
             bno : {
@@ -60,10 +62,8 @@
             async callCommentList() {
                 if(this.bno !== 0){
                     const response = await this.$api(`/api/board/comment/${this.bno}`, 'GET', null);
-                    if(response.status === 200){
+                    if(response.status === this.HTTP_OK){
                         this.commentList = response.data;
-                    } else if(response?.data?.error){
-                        alert(response.data.error);
                     }
                 }
             },
@@ -71,14 +71,12 @@
             async postComment(){
                 if(this.newComment){
                     const response = await this.$api(`/api/board/comment/${this.bno}`,'POST',{comment : this.newComment});
-                    if(response.status === 200){
+                    if(response.status === this.HTTP_OK || response.status === this.HTTP_CREATED){
                         alert('댓글 등록되었습니다.');
                         this.callCommentList();
                         this.refreshBoardList();
                         this.newComment = ''
-                    } else if(response?.data?.error) {
-                        alert(response.data.error);
-                    }   
+                    }
                 } else {
                     alert('댓글을 입력해주세요');
                 }
@@ -91,13 +89,11 @@
 
                 const response = await this.$api(`/api/board/comment/${id}`,'DELETE',null);
                 
-                if(response.status === 200){
+                if(response.status === this.HTTP_OK){
                     alert('댓글이 삭제되었습니다.');
                     this.callCommentList();
                     this.refreshBoardList();
-                } else if(response?.data?.error) {
-                    alert(response.data.error);
-                }   
+                }
 
             },
 

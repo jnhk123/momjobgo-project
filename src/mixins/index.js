@@ -1,10 +1,11 @@
 import axios from '@/plugins/axios'
 import store from '@/store'
+import Code from '@/utils/Code'
 
 export default {
 
     data: () => ({
-        HTTP_OK: 200
+        ...Code
     }),
 
     methods: {
@@ -14,7 +15,8 @@ export default {
          * @param {*} data paramter 
          * @returns 
          */
-        async $api(url, method, data) {
+        async $api(url, method, data, errorCallback) {
+
             return axios({
                 headers: {
                     Authorization: `Bearer ${store.state.user.token}`
@@ -23,8 +25,20 @@ export default {
                 , url
                 , data
             }).catch(e => {
-                return e.response
+                if(e.response.status === Code.HTTP_UNAUTHORIZED 
+                    && e.response?.data?.error 
+                    && e.response.data.error === 'Invalid token'){
+
+                    alert('로그인 정보가 만료되었습니다.'); 
+                    store.dispatch('setToken', null);
+
+                } else if(errorCallback){
+                    errorCallback(e.response);
+                } else if(e.response?.data?.error){
+                    alert(e.response.data.error);
+                }
             });
+            
         },
 
         $loadKakaoMap(callback) {
@@ -38,40 +52,8 @@ export default {
             }
         },
 
-        $nl2br(text){
-            return text.replace(/\n/g, "<br />");
-        },
-
-        toYmdHms(dateObj){
-            return toYmdHms(dateObj);
-        }
     },
 
-    filters : {
-
-        getWriteTime(dateObj){
-            const now = new Date();
-            const diff = now.getTime() - dateObj.getTime();
-            const minute = 1000 * 60;
-            const hour = 1000 * 60 * 60;
-            const day = 1000 * 60 * 60 * 24;
-
-            if(hour > diff){
-                return `${Math.ceil(diff / minute)}분 전`;
-            } else if(day > diff){
-                return `${Math.ceil(diff / hour)}시간 전`
-            } else {
-                return toYmdHms(dateObj);
-            }
-
-        },
-
-        time2YmdHms(dateObj){
-            return toYmdHms(dateObj);
-        },
-
-
-    }
 }
 
 function toYmdHms(dateObj){

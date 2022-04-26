@@ -45,4 +45,10 @@ export default class Page {
             title: `Login`
         },
     }
+
+    static method = {
+        getSubPath(){
+            return window.location.pathname.replace(Page.BASE_PATH, '');
+        }
+    }
 }
