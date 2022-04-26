@@ -1,9 +1,9 @@
-const SUB_PATH = `/momjobgo-project`;
-
 export default class Page {
     
+    static BASE_PATH = `/momjobgo-project`;
+
     static HOME = {
-        path: `${SUB_PATH}/home`,
+        path: `/home`,
         name: `home`,
         meta: {
             title: `Home`,
@@ -12,7 +12,7 @@ export default class Page {
     }
 
     static ABOUT = {
-        path: `${SUB_PATH}/about`,
+        path: `/about`,
         name: `about`,
         meta: {
             title: `About`,
@@ -21,7 +21,7 @@ export default class Page {
     }
 
     static USER = {
-        path: `${SUB_PATH}/user`,
+        path: `/user`,
         name: `user`,
         meta: {
             title: `User`,
@@ -30,7 +30,7 @@ export default class Page {
     }
 
     static BOARD = {
-        path: `${SUB_PATH}/board`,
+        path: `/board`,
         name: `board`,
         meta: {
             title: `Board`,
@@ -39,7 +39,7 @@ export default class Page {
     }
 
     static LOGIN = {
-        path: `${SUB_PATH}/login`,
+        path: `/login`,
         name: `login`,
         meta: {
             title: `Login`

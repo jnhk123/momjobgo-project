@@ -12,7 +12,6 @@ import Page from '@/utils/Page'
 Vue.use(VueRouter)
 
 const routes = [
-
   {
     ...Page.HOME,
     component: HomeView
@@ -44,8 +43,9 @@ const routes = [
 ]
 
 const router = new VueRouter({
-  mode: 'history',
-  routes
+    base : `${Page.BASE_PATH}`,
+    mode: 'history',
+    routes
 });
 
 router.beforeEach(function (to, from, next) {
