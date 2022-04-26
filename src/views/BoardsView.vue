@@ -26,12 +26,13 @@
                     <v-container>
                     <v-card-text v-html="$nl2br(editedItem.contents)" style="border-style: ridge;"></v-card-text>
                     <v-card-text>
-                        <v-chip-group 
-                            v-model="emotionSelection"
-                            active-class="accent-4 red--text" 
-                            column>
-                            <v-chip><v-icon>favorite</v-icon></v-chip>
-                        </v-chip-group>
+                        <v-icon 
+                            v-for="(emotion, index) in emotionList"
+                            :key="index" 
+                            :color="emotion.on ? 'red' : ''"
+                            @click="clickEmotion(emotion, index)"
+                            >{{emotion.icon}}
+                        </v-icon>
                     </v-card-text>
                     <BoardCommentsViewVue :bno="popupBno" @updated="updatedComment"></BoardCommentsViewVue>
                     </v-container>
@@ -99,7 +100,12 @@
         </template>
 
         <template #item.title="{ item }">
-            <span style="cursor: pointer;" @click="popupItem(item)"> {{item.title}} <template v-if="item.commentCnt > 0">({{item.commentCnt}})</template> </span>
+            <span style="cursor: pointer;" @click="popupItem(item)"> 
+                {{item.title}} 
+                <template v-if="item.commentCnt > 0">
+                    ({{item.commentCnt}})
+                </template> 
+            </span>
         </template>
 
         <template #item.createdAt="{ item }">
@@ -125,7 +131,10 @@
 
     export default {
         data: () => ({
-            emotionSelection : null,
+            
+            emotionList : [
+                {icon : 'favorite', on : false, value : 0}
+            ],
 
             popupBno : 0,
 
@@ -143,6 +152,7 @@
                 },
                 { text: "제목", value: "title" },
                 { text: "작성자", value: "writer" },
+                { text: "추천", value: "likeCnt" },
                 { text: "등록일", value: "createdAt" },
                 { text: "", value: "actions", sortable: false },
             ],
@@ -305,20 +315,37 @@
                 const response = await this.$api(`/api/board/emotion/${this.popupBno}`, 'GET', null);
 
                 if(response.status === 200){
-
-                    const emotion = response.data.emotion;
-                    this.emotionSelection = emotion;
                     
+                    const emotion = response.data.emotion;
+                    if(emotion != null){
+                        this.emotionList[emotion].on = true;
+                    } else {
+                        this.emotionList.forEach(emotion => emotion.on = false);
+                    }
+
                 } else if(response?.data?.error){
                     alert(response.data.error);
                 }
-            }
-        },
+            },
 
-        watch : {
-            'emotionSelection' : function() {
-                this.$api(`/api/board/emotion/${this.popupBno}`, 'POST', {emotion : this.emotionSelection});
-            }
+            clickEmotion(item, index){
+                item.on = !item.on;
+
+                this.emotionList.forEach((emotion, idx)=> {
+                    if(!index === idx){
+                        emotion.on = false;
+                    }
+                });
+
+                if(item.on){
+                    this.$api(`/api/board/emotion/${this.popupBno}`, 'POST', {emotion : item.value});
+                } else {
+                    this.$api(`/api/board/emotion/${this.popupBno}`, 'POST', {emotion : null});
+                } 
+
+                
+            },
+
         }
 
     };
