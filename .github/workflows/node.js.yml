@@ -39,6 +39,6 @@ jobs:
         REMOTE_USER: ${{ secrets.USERNAME }}
         # Remote port
         REMOTE_PORT: ${{ secrets.PORT }}
-        #SOURCE : build/libs
+        SOURCE : docs/*
         # Target directory
         TARGET: /home/momjobgo-vue/deploy_dir
